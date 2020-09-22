@@ -40,16 +40,31 @@ config :nerves_firmware_ssh,
 # Configure the network using vintage_net
 # See https://github.com/nerves-networking/vintage_net for more information
 config :vintage_net,
-  regulatory_domain: "US",
+  regulatory_domain: "EU",
   config: [
-    {"usb0", %{type: VintageNetDirect}},
-    {"eth0",
+    {"wlan0",
      %{
-       type: VintageNetEthernet,
+       type: VintageNetWiFi,
+       vintage_net_wifi: %{
+         networks: [
+           %{
+             key_mgmt: :wpa_psk,
+             ssid: "odin_smash",
+             psk: "lunsford4824"
+           }
+         ]
+       },
        ipv4: %{method: :dhcp}
-     }},
-    {"wlan0", %{type: VintageNetWiFi}}
+     }}
   ]
+
+config :hume, Hume.OLED,
+  device: "i2c-1",
+  driver: :ssd1306,
+  type: :i2c,
+  width: 128,
+  height: 32,
+  address: 0x3C
 
 config :mdns_lite,
   # The `host` key specifies what hostnames mdns_lite advertises.  `:hostname`

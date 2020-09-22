@@ -31,7 +31,7 @@ defmodule Hume.MixProject do
   def application do
     [
       mod: {Hume.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :inets]
     ]
   end
 
@@ -47,10 +47,13 @@ defmodule Hume.MixProject do
       # Dependencies for all targets except :host
       {:nerves_runtime, "~> 0.6", targets: @all_targets},
       {:nerves_pack, "~> 0.2", targets: @all_targets},
-      {:nerves_network, "~> 0.5"},
-
+      {:circuits_i2c, "~> 0.1"},
+      {:circuits_gpio, "~> 0.4"},
+      # Display deps
+      {:oled, "~> 0.3.0"},
+      {:chisel, "~> 0.2.0"},
       # Dependencies for specific targets
-      {:nerves_system_rpi2, "~> 1.11", runtime: false, targets: :rpi2},
+      {:nerves_system_rpi2, "~> 1.11", runtime: false, targets: :rpi2}
     ]
   end
 

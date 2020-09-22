@@ -26,19 +26,6 @@ config :nerves, source_date_epoch: "1591076337"
 
 config :logger, backends: [RingLogger]
 
-key_mgmt = System.get_env("NERVES_NETWORK_KEY_MGMT") || "WPA-PSK"
-
-config :nerves_network, :default,
-  wlan0: [
-    networks: [
-      [
-        ssid: System.get_env("NERVES_NETWORK_SSID"),
-        psk: System.get_env("NERVES_NETWORK_PSK"),
-        key_mgmt: String.to_atom(key_mgmt)
-      ]
-    ]
-  ]
-
 if Mix.target() != :host do
   import_config "target.exs"
 end
