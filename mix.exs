@@ -50,6 +50,7 @@ defmodule Hume.MixProject do
       {:circuits_i2c, "~> 0.1"},
       {:circuits_gpio, "~> 0.4"},
       {:telemetry, "~> 0.4.2"},
+      {:myco_bot_ui, path: "../myco_bot_ui"},
       # Display deps
       {:oled, "~> 0.3.0"},
       {:chisel, "~> 0.2.0"},
