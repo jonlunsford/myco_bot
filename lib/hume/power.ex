@@ -40,7 +40,7 @@ defmodule Hume.Power do
   def handle_rh(rh) when is_float(rh) do
     Logger.debug("[HUME] handling rh: #{rh}")
 
-    if rh >= 90.0, do: down(), else: up()
+    if rh >= @rh_threshold, do: down(), else: up()
   end
 
   def handle_rh(rh), do: Logger.debug("[HUME] could not handle rh reading: #{rh}")
@@ -48,6 +48,13 @@ defmodule Hume.Power do
   @impl true
   def handle_call(:up, _from, %{status: :down} = state) do
     response = GPIO.write(state.ref, 1)
+
+    :telemetry.execute(
+      [:hume, :power],
+      %{status: :up},
+      %{gpio_response: response}
+    )
+
     {:reply, response, %{state | status: :up}}
   end
 
@@ -60,6 +67,13 @@ defmodule Hume.Power do
   @impl true
   def handle_call(:down, _from, %{status: :up} = state) do
     response = GPIO.write(state.ref, 0)
+
+    :telemetry.execute(
+      [:hume, :power],
+      %{status: :down},
+      %{gpio_response: response}
+    )
+
     {:reply, response, %{state | status: :down}}
   end
 

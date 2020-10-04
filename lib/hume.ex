@@ -4,7 +4,7 @@ defmodule Hume do
   use GenServer
 
   alias Hume.Sensor
-  #alias Hume.Display
+  # alias Hume.Display
   alias Hume.Power
 
   def start_link(arg) do
@@ -19,7 +19,9 @@ defmodule Hume do
       temp: nil
     }
 
+    attach_telemetry()
     send(self(), :poll)
+
     {:ok, state}
   end
 
@@ -33,12 +35,36 @@ defmodule Hume do
 
     Logger.debug("[HUME] Latest reading: " <> text)
 
-    #Display.set(%{text: text, x: 1, y: 1})
+    # Display.set(%{text: text, x: 1, y: 1})
 
     Power.handle_rh(rh)
+
+    :telemetry.execute(
+      [:hume, :sensor],
+      %{temp: temp, rh: rh},
+      %{}
+    )
 
     Process.send_after(self(), :poll, 30_000)
 
     {:noreply, state}
+  end
+
+  defp attach_telemetry() do
+    Logger.debug("[HUME] attaching telemetry handlers")
+
+    :ok = :telemetry.attach(
+      "hume-sensor-handler",
+      [:hume, :sensor],
+      &Hume.Stats.handle_event/4,
+      nil
+    )
+
+    :ok = :telemetry.attach(
+      "hume-power-handler",
+      [:hume, :power],
+      &Hume.Stats.handle_event/4,
+      nil
+    )
   end
 end
