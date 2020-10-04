@@ -3,13 +3,13 @@ defmodule Hume.MixProject do
 
   @app :hume
   @version "0.1.0"
-  @all_targets [:rpi2]
+  @all_targets [:rpi2, :rpi0]
 
   def project do
     [
       app: @app,
       version: @version,
-      elixir: "~> 1.9",
+      elixir: "~> 1.10",
       archives: [nerves_bootstrap: "~> 1.8"],
       start_permanent: Mix.env() == :prod,
       build_embedded: true,
@@ -49,11 +49,13 @@ defmodule Hume.MixProject do
       {:nerves_pack, "~> 0.2", targets: @all_targets},
       {:circuits_i2c, "~> 0.1"},
       {:circuits_gpio, "~> 0.4"},
+      {:telemetry, "~> 0.4.2"},
       # Display deps
       {:oled, "~> 0.3.0"},
       {:chisel, "~> 0.2.0"},
       # Dependencies for specific targets
-      {:nerves_system_rpi2, "~> 1.11", runtime: false, targets: :rpi2}
+      {:nerves_system_rpi2, "~> 1.12", runtime: false, targets: :rpi2},
+      {:nerves_system_rpi0, "~> 1.12", runtime: false, targets: :rpi0}
     ]
   end
 

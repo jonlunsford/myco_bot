@@ -34,13 +34,13 @@ if keys == [],
     See your project's config.exs for this error message.
     """)
 
-config :nerves_firmware_ssh,
+config :nerves_ssh,
   authorized_keys: Enum.map(keys, &File.read!/1)
 
 # Configure the network using vintage_net
 # See https://github.com/nerves-networking/vintage_net for more information
 config :vintage_net,
-  regulatory_domain: "EU",
+  regulatory_domain: "US",
   config: [
     {"wlan0",
      %{
@@ -48,9 +48,11 @@ config :vintage_net,
        vintage_net_wifi: %{
          networks: [
            %{
+             mode: :infrastructure,
+             verbose: true,
              key_mgmt: :wpa_psk,
-             ssid: "odin_smash",
-             psk: "lunsford4824"
+             ssid: System.get_env("NERVES_NETWORK_SSID"),
+             psk: System.get_env("NERVES_NETWORK_PSK")
            }
          ]
        },
@@ -64,7 +66,7 @@ config :hume, Hume.OLED,
   type: :i2c,
   width: 128,
   height: 32,
-  address: 0x3C
+  address: 0x3c
 
 config :mdns_lite,
   # The `host` key specifies what hostnames mdns_lite advertises.  `:hostname`
