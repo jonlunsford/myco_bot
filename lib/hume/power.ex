@@ -5,7 +5,7 @@ defmodule Hume.Power do
 
   alias Circuits.GPIO
 
-  @rh_threshold 90
+  @rh_threshold 98
 
   @impl true
   def start_link(args) do
