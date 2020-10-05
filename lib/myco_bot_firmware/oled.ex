@@ -1,13 +1,13 @@
-defmodule Hume.OLED do
+defmodule MycoBot.OLED do
   require Logger
-  use OLED.Display, app: :hume
+  use OLED.Display, app: :myco_bot
 
   def write(text, x, y, font) do
     clear(:off)
-    Logger.debug("[HUME] Clearing OLED")
+    Logger.debug("[MYCO] Clearing OLED")
     display()
     Chisel.Renderer.draw_text(text, x, y, font, &draw_pixel/2)
-    Logger.debug("[HUME] Rendering OLED")
+    Logger.debug("[MYCO] Rendering OLED")
     display()
   end
 

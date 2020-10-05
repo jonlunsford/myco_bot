@@ -60,7 +60,7 @@ config :vintage_net,
      }}
   ]
 
-config :hume, Hume.OLED,
+config :myco_bot, MycoBot.OLED,
   device: "i2c-1",
   driver: :ssd1306,
   type: :i2c,

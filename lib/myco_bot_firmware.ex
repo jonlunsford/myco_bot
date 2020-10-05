@@ -1,14 +1,14 @@
-defmodule Hume do
+defmodule MycoBot do
   require Logger
 
   use GenServer
 
-  alias Hume.Sensor
-  # alias Hume.Display
-  alias Hume.Power
+  alias MycoBot.Sensor
+  # alias MycoBot.Display
+  alias MycoBot.Power
 
   def start_link(arg) do
-    Logger.debug("[HUME] Starting sensor polling")
+    Logger.debug("[MYCO] Starting sensor polling")
 
     GenServer.start_link(__MODULE__, arg, name: __MODULE__)
   end
@@ -19,28 +19,27 @@ defmodule Hume do
       temp: nil
     }
 
-    attach_telemetry()
     send(self(), :poll)
 
     {:ok, state}
   end
 
   def handle_info(:poll, state) do
-    Logger.debug("[HUME] getting latest reading...")
+    Logger.debug("[MYCO] getting latest reading...")
 
     temp = Sensor.read_temp()
     rh = Sensor.read_rh()
     state = %{state | temp: temp, rh: rh}
     text = "RH: #{state.rh} T: #{state.temp}"
 
-    Logger.debug("[HUME] Latest reading: " <> text)
+    Logger.debug("[MYCO] Latest reading: " <> text)
 
     # Display.set(%{text: text, x: 1, y: 1})
 
     Power.handle_rh(rh)
 
     :telemetry.execute(
-      [:hume, :sensor],
+      [:myco_bot, :sensor],
       %{temp: temp, rh: rh},
       %{}
     )
@@ -48,23 +47,5 @@ defmodule Hume do
     Process.send_after(self(), :poll, 30_000)
 
     {:noreply, state}
-  end
-
-  defp attach_telemetry() do
-    Logger.debug("[HUME] attaching telemetry handlers")
-
-    :ok = :telemetry.attach(
-      "hume-sensor-handler",
-      [:hume, :sensor],
-      &Hume.Stats.handle_event/4,
-      nil
-    )
-
-    :ok = :telemetry.attach(
-      "hume-power-handler",
-      [:hume, :power],
-      &Hume.Stats.handle_event/4,
-      nil
-    )
   end
 end

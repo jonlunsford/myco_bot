@@ -1,4 +1,4 @@
-defmodule Hume.Sensor do
+defmodule MycoBot.Sensor do
   require Logger
 
   use GenServer
@@ -24,7 +24,7 @@ defmodule Hume.Sensor do
   #@rev_2_cmd <<0x20>>
 
   def start_link(arg) do
-    Logger.debug("[HUME] Starting Sensor Server")
+    Logger.debug("[MYCO] Starting Sensor Server")
 
     GenServer.start_link(__MODULE__, arg, name: __MODULE__)
   end
@@ -40,15 +40,15 @@ defmodule Hume.Sensor do
 
     case I2C.open("i2c-1") do
       {:ok, ref} ->
-        Logger.debug("[HUME] I2C Sensor Found, resetting it")
+        Logger.debug("[MYCO] I2C Sensor Found, resetting it")
         I2C.write(ref, @default_addr, @reset)
 
         {:ok, %{state | ref: ref}}
       {:error, reason} ->
-        Logger.warn("[HUME] I2C Sensor Not Found: #{reason}")
+        Logger.warn("[MYCO] I2C Sensor Not Found: #{reason}")
 
         :telemetry.execute(
-          [:hume, :sensor],
+          [:myco_bot, :sensor],
           %{error: reason},
           %{extra: "I2C sensor not found. Is everything plugged in?"}
         )
@@ -85,9 +85,9 @@ defmodule Hume.Sensor do
   defp do_read_temp(state) do
     case I2C.write_read(state.ref, @default_addr, @temp_hold_cmd, 2) do
       {:ok, bits} ->
-        Logger.debug("[HUME] CONVERTING: #{bits}")
+        Logger.debug("[MYCO] CONVERTING: #{bits}")
         temp = convert_temp(bits)
-        Logger.debug("[HUME] FAHRENHEIT: #{temp}")
+        Logger.debug("[MYCO] FAHRENHEIT: #{temp}")
         {temp, %{state | temp: temp}}
       {:error, reason} ->
         Logger.warn("ERROR: #{reason}")
@@ -97,9 +97,9 @@ defmodule Hume.Sensor do
 
   defp convert_temp(bits) when is_bitstring(bits) do
     reading = :binary.decode_unsigned(bits)
-    Logger.debug("[HUME] READING: #{reading}")
+    Logger.debug("[MYCO] READING: #{reading}")
     value = (reading * 175.72) / 65536 - 46.85
-    Logger.debug("[HUME] CELSIUS: #{value}")
+    Logger.debug("[MYCO] CELSIUS: #{value}")
 
     value
     |> celcius_to_f
@@ -115,9 +115,9 @@ defmodule Hume.Sensor do
   defp do_read_rh(state) do
     case I2C.write_read(state.ref, @default_addr, @rh_hold_cmd, 2) do
       {:ok, bits} ->
-        Logger.debug("[HUME] CONVERTING: #{bits}")
+        Logger.debug("[MYCO] CONVERTING: #{bits}")
         rh = convert_rh(bits)
-        Logger.debug("[HUME] HUMIDITY: #{rh}")
+        Logger.debug("[MYCO] HUMIDITY: #{rh}")
         {rh, %{state | rh: rh}}
       {:error, reason} ->
         Logger.warn("ERROR: #{reason}")
@@ -127,7 +127,7 @@ defmodule Hume.Sensor do
 
   defp convert_rh(bits) when is_bitstring(bits) do
     reading = :binary.decode_unsigned(bits)
-    Logger.debug("[HUME] READING: #{reading}")
+    Logger.debug("[MYCO] READING: #{reading}")
     value = (reading * 125) / 65536 - 6
 
     value

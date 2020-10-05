@@ -1,4 +1,4 @@
-defmodule Hume.Display do
+defmodule MycoBot.Display do
   require Logger
   use GenServer
 
@@ -8,9 +8,9 @@ defmodule Hume.Display do
 
   @impl true
   def init(args) do
-    {:ok, font} = Chisel.Font.load(Application.app_dir(:hume, ["priv", "static", args.font]))
+    {:ok, font} = Chisel.Font.load(Application.app_dir(:myco_bot, ["priv", "static", args.font]))
 
-    Logger.debug("[HUME] Starting Display")
+    Logger.debug("[MYCO] Starting Display")
 
     {:ok, %{font: font}}
   end
@@ -21,8 +21,8 @@ defmodule Hume.Display do
 
   @impl true
   def handle_cast(%{text: text, x: x, y: y}, state) do
-    Logger.debug("[HUME] Displaying: #{text} at x: #{x} y: #{y}")
-    Hume.OLED.write(text, x, y, state.font)
+    Logger.debug("[MYCO] Displaying: #{text} at x: #{x} y: #{y}")
+    MycoBot.OLED.write(text, x, y, state.font)
     {:noreply, state}
   end
 end

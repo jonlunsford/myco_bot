@@ -1,7 +1,7 @@
-defmodule Hume.MixProject do
+defmodule MycoBot.MixProject do
   use Mix.Project
 
-  @app :hume
+  @app :myco_bot
   @version "0.1.0"
   @all_targets [:rpi2, :rpi0]
 
@@ -30,7 +30,7 @@ defmodule Hume.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      mod: {Hume.Application, []},
+      mod: {MycoBot.Application, []},
       extra_applications: [:logger, :runtime_tools, :inets]
     ]
   end
@@ -50,10 +50,10 @@ defmodule Hume.MixProject do
       {:circuits_i2c, "~> 0.1"},
       {:circuits_gpio, "~> 0.4"},
       {:telemetry, "~> 0.4.2"},
-      {:myco_bot_ui, path: "../myco_bot_ui"},
       # Display deps
       {:oled, "~> 0.3.0"},
       {:chisel, "~> 0.2.0"},
+      {:rename, "~> 0.1.0", only: :dev},
       # Dependencies for specific targets
       {:nerves_system_rpi2, "~> 1.12", runtime: false, targets: :rpi2},
       {:nerves_system_rpi0, "~> 1.12", runtime: false, targets: :rpi0}

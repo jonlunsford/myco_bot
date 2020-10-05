@@ -1,4 +1,4 @@
-# Hume
+# MycoBot
 
 **TODO: Add description**
 
