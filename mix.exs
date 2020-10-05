@@ -53,7 +53,6 @@ defmodule MycoBot.MixProject do
       # Display deps
       {:oled, "~> 0.3.0"},
       {:chisel, "~> 0.2.0"},
-      {:rename, "~> 0.1.0", only: :dev},
       # Dependencies for specific targets
       {:nerves_system_rpi2, "~> 1.12", runtime: false, targets: :rpi2},
       {:nerves_system_rpi0, "~> 1.12", runtime: false, targets: :rpi0}
