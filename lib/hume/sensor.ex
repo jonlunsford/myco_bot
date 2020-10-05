@@ -46,6 +46,13 @@ defmodule Hume.Sensor do
         {:ok, %{state | ref: ref}}
       {:error, reason} ->
         Logger.warn("[HUME] I2C Sensor Not Found: #{reason}")
+
+        :telemetry.execute(
+          [:hume, :sensor],
+          %{error: reason},
+          %{extra: "I2C sensor not found. Is everything plugged in?"}
+        )
+
         {:ok, state}
     end
   end
