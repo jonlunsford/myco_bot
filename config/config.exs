@@ -32,7 +32,6 @@ end
 
 # When we deploy to a device, we use the "prod" configuration:
 import_config "../../myco_bot_ui/config/config.exs"
-import_config "../../myco_bot_ui/config/prod.exs"
 
 config :myco_bot_ui, MycoBotUi.Endpoint,
   # Nerves root filesystem is read-only, so disable the code reloader
@@ -42,4 +41,4 @@ config :myco_bot_ui, MycoBotUi.Endpoint,
   load_from_system_env: false,
   # Start the server since we're running in a release instead of through `mix`
   server: true,
-  url: [host: "nerves.local", port: 80],
+  url: [host: "nerves.local", port: 80]

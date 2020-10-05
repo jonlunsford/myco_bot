@@ -2,7 +2,6 @@ defmodule Hume.Display do
   require Logger
   use GenServer
 
-  @impl true
   def start_link(args) do
     GenServer.start_link(__MODULE__, args, name: __MODULE__)
   end

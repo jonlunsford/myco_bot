@@ -7,7 +7,6 @@ defmodule Hume.Power do
 
   @rh_threshold 98
 
-  @impl true
   def start_link(args) do
     GenServer.start_link(__MODULE__, args, name: __MODULE__)
   end
