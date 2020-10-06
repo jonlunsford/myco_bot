@@ -49,8 +49,8 @@ defmodule MycoBot.Power do
     response = GPIO.write(state.ref, 1)
 
     :telemetry.execute(
-      [:myco_bot, :power],
-      %{status: :up},
+      [:myco_bot, :power, :up],
+      %{},
       %{gpio_response: response}
     )
 
@@ -68,8 +68,8 @@ defmodule MycoBot.Power do
     response = GPIO.write(state.ref, 0)
 
     :telemetry.execute(
-      [:myco_bot, :power],
-      %{status: :down},
+      [:myco_bot, :power, :down],
+      %{},
       %{gpio_response: response}
     )
 

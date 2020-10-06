@@ -7,18 +7,22 @@ defmodule MycoBot.Application do
   use Application
 
   def start(_type, _args) do
-    Logger.info("[MYCO]: Starting Application")
+    Logger.info("[MYCOBOT]: Starting Application")
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: MycoBot.Supervisor]
     children =
       [
-        {MycoBot.Sensor, []},
+        {Registry, keys: :unique, name: Pollers},
+        {MycoBot.Telemetry, []},
+        #{MycoBot.Sensor, []},
         #MycoBot.OLED,
         #{MycoBot.Display, %{font: "Chroma48Medium-8.bdf"}},
         {MycoBot.Power, []},
-        {MycoBot, []}
+        #{MycoBot, []},
       ] ++ children(target())
+
+    MycoBot.Instrumenter.setup()
 
     Supervisor.start_link(children, opts)
   end

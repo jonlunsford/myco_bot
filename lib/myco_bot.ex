@@ -38,12 +38,6 @@ defmodule MycoBot do
 
     Power.handle_rh(rh)
 
-    :telemetry.execute(
-      [:myco_bot, :sensor],
-      %{temp: temp, rh: rh},
-      %{}
-    )
-
     Process.send_after(self(), :poll, 30_000)
 
     {:noreply, state}

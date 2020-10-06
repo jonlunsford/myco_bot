@@ -35,7 +35,8 @@ defmodule MycoBot.Sensor do
       temp: nil,
       rh: nil,
       ref: nil,
-      error: nil
+      error: nil,
+      status: :down
     }
 
     case I2C.open("i2c-1") do
@@ -43,17 +44,11 @@ defmodule MycoBot.Sensor do
         Logger.debug("[MYCO] I2C Sensor Found, resetting it")
         I2C.write(ref, @default_addr, @reset)
 
-        {:ok, %{state | ref: ref}}
+        {:ok, %{state | ref: ref, status: :up}}
       {:error, reason} ->
         Logger.warn("[MYCO] I2C Sensor Not Found: #{reason}")
 
-        :telemetry.execute(
-          [:myco_bot, :sensor],
-          %{error: reason},
-          %{extra: "I2C sensor not found. Is everything plugged in?"}
-        )
-
-        {:ok, state}
+        {:ok, %{state | error: reason, status: :down}}
     end
   end
 
@@ -67,14 +62,24 @@ defmodule MycoBot.Sensor do
 
   @impl true
   def handle_call(:read_temp, _from, state) do
-    {temp, state} = do_read_temp(state)
-    {:reply, temp, state}
+    case do_read_temp(state) do
+      {temp, state} ->
+        {:reply, temp, state}
+
+      {:error, state}
+        {:reply, "Error", state}
+    end
   end
 
   @impl true
   def handle_call(:read_rh, _from, state) do
-    {rh, state} = do_read_rh(state)
-    {:reply, rh, state}
+    case do_read_rh(state) do
+      {rh, state} ->
+        {:reply, rh, state}
+
+      {:error, state}
+        {:reply, "Error", state}
+    end
   end
 
   @impl true
@@ -82,7 +87,7 @@ defmodule MycoBot.Sensor do
     {:reply, state, state}
   end
 
-  defp do_read_temp(state) do
+  defp do_read_temp(%{error: nil} = state) do
     case I2C.write_read(state.ref, @default_addr, @temp_hold_cmd, 2) do
       {:ok, bits} ->
         Logger.debug("[MYCO] CONVERTING: #{bits}")
@@ -93,6 +98,11 @@ defmodule MycoBot.Sensor do
         Logger.warn("ERROR: #{reason}")
         {:error, %{state | error: reason}}
     end
+  end
+
+  defp do_read_temp(%{error: error} = state) do
+    Logger.warn("[MYCOBOT] error with sensor: #{error}")
+    {:error, state}
   end
 
   defp convert_temp(bits) when is_bitstring(bits) do
@@ -112,7 +122,7 @@ defmodule MycoBot.Sensor do
   end
   defp celcius_to_f(_), do: 0.0
 
-  defp do_read_rh(state) do
+  defp do_read_rh(%{error: nil} = state) do
     case I2C.write_read(state.ref, @default_addr, @rh_hold_cmd, 2) do
       {:ok, bits} ->
         Logger.debug("[MYCO] CONVERTING: #{bits}")
@@ -123,6 +133,11 @@ defmodule MycoBot.Sensor do
         Logger.warn("ERROR: #{reason}")
         {:error, %{state | error: reason}}
     end
+  end
+
+  defp do_read_rh(%{error: error} = state) do
+    Logger.warn("[MYCOBOT] error with sensor: #{error}")
+    {:error, state}
   end
 
   defp convert_rh(bits) when is_bitstring(bits) do

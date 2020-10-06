@@ -50,6 +50,7 @@ defmodule MycoBot.MixProject do
       {:circuits_i2c, "~> 0.1"},
       {:circuits_gpio, "~> 0.4"},
       {:telemetry, "~> 0.4.2"},
+      {:telemetry_poller, "0.5.1"},
       # Display deps
       {:oled, "~> 0.3.0"},
       {:chisel, "~> 0.2.0"},
