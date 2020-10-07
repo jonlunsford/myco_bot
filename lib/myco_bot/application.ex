@@ -14,12 +14,12 @@ defmodule MycoBot.Application do
     children =
       [
         {Registry, keys: :unique, name: Pollers},
+        {Registry, keys: :unique, name: Pins},
         {MycoBot.Telemetry, []},
+        {MycoBot.Relay, []},
         #{MycoBot.Sensor, []},
-        #MycoBot.OLED,
-        #{MycoBot.Display, %{font: "Chroma48Medium-8.bdf"}},
-        {MycoBot.Power, []},
-        #{MycoBot, []},
+        #{MycoBot.Power, []},
+        {MycoBot, %{ht_sensor_polling_period: 30}},
       ] ++ children(target())
 
     MycoBot.Instrumenter.setup()

@@ -4,41 +4,26 @@ defmodule MycoBot do
   use GenServer
 
   alias MycoBot.Sensor
-  # alias MycoBot.Display
   alias MycoBot.Power
 
-  def start_link(arg) do
-    Logger.debug("[MYCO] Starting sensor polling")
-
-    GenServer.start_link(__MODULE__, arg, name: __MODULE__)
+  def start_link(args) do
+    GenServer.start_link(__MODULE__, args, name: __MODULE__)
   end
 
-  def init(_arg) do
-    state = %{
-      rh: nil,
-      temp: nil
-    }
+  @impl true
+  def init(args) do
+    send(self(), :start)
 
-    send(self(), :poll)
-
-    {:ok, state}
+    {:ok, args}
   end
 
-  def handle_info(:poll, state) do
-    Logger.debug("[MYCO] getting latest reading...")
 
-    temp = Sensor.read_temp()
-    rh = Sensor.read_rh()
-    state = %{state | temp: temp, rh: rh}
-    text = "RH: #{state.rh} T: #{state.temp}"
+  @impl true
+  def handle_info(:start, state) do
+    MycoBot.Telemetry.start_ht_sensor("i2c-1", state.ht_sensor_polling_period)
+    MycoBot.Relay.open_pin(%{pin_number: 16, pin_direction: :output, value: 1})
 
-    Logger.debug("[MYCO] Latest reading: " <> text)
-
-    # Display.set(%{text: text, x: 1, y: 1})
-
-    Power.handle_rh(rh)
-
-    Process.send_after(self(), :poll, 30_000)
+    :telemetry.execute([:myco_bot, :started], %{}, state)
 
     {:noreply, state}
   end

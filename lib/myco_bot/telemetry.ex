@@ -1,8 +1,6 @@
 defmodule MycoBot.Telemetry do
   @moduledoc false
 
-  require Logger
-
   use DynamicSupervisor
 
   alias MycoBot.HTSensor

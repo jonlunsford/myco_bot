@@ -6,6 +6,11 @@ defmodule MycoBot.Instrumenter do
       [:myco_bot, :ht_sensor, :error],
       [:myco_bot, :ht_sensor, :read_temp],
       [:myco_bot, :ht_sensor, :read_rh],
+
+      [:myco_bot, :gpio, :error],
+      [:myco_bot, :gpio, :opened],
+      [:myco_bot, :gpio, :up],
+      [:myco_bot, :gpio, :down]
     ]
 
     :telemetry.attach_many(
