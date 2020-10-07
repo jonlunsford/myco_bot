@@ -3,9 +3,6 @@ defmodule MycoBot do
 
   use GenServer
 
-  alias MycoBot.Sensor
-  alias MycoBot.Power
-
   def start_link(args) do
     GenServer.start_link(__MODULE__, args, name: __MODULE__)
   end
