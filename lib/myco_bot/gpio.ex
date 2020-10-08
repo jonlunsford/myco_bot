@@ -12,7 +12,6 @@ defmodule MycoBot.GPIO do
     state =
       args
       |> Map.put(:ref, nil)
-      |> Map.put(:error, nil)
 
     case GPIO.open(state.pin_number, state.pin_direction, [initial_value: state.value]) do
       {:ok, ref} ->
@@ -23,7 +22,7 @@ defmodule MycoBot.GPIO do
         {:ok, state}
 
       {:error, reason} ->
-        state = %{state | error: reason}
+        state = Map.put(state, :error, reason)
 
         :telemetry.execute([:myco_bot, :gpio, :error], %{}, state)
 
@@ -60,7 +59,7 @@ defmodule MycoBot.GPIO do
         {:reply, :ok, state}
 
       {:error, reason} ->
-        state = %{state | error: reason}
+        state = Map.put(state, :error, reason)
 
         :telemetry.execute([:myco_bot, :gpio, :error], %{}, state)
 
@@ -85,7 +84,7 @@ defmodule MycoBot.GPIO do
         {:reply, :ok, state}
 
       {:error, reason} ->
-        state = %{state | error: reason}
+        state = Map.put(state, :error, reason)
 
         :telemetry.execute([:myco_bot, :gpio, :error], %{}, state)
 

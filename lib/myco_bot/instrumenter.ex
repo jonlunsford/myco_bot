@@ -30,6 +30,10 @@ defmodule MycoBot.Instrumenter do
     if measurements.rh >= 90, do: MycoBot.GPIO.down(16), else: MycoBot.GPIO.up(16)
   end
 
+  def handle_event([:myco_bot, :ht_sensor, :error], measurements, meta, _config) do
+    MycoBot.Telemetry.restart_ht_sensor("i2c-1")
+  end
+
   def handle_event(event, measurements, meta, _config) do
     Logger.debug("[MYCOBOT] event: #{inspect(event)}")
     Logger.debug("[MYCOBOT] measurements: #{inspect(measurements)}")

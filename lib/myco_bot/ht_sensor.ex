@@ -53,6 +53,10 @@ defmodule MycoBot.HTSensor do
     )
   end
 
+  def close(i2c_bus) do
+    I2C.close(i2c_bus)
+  end
+
   def read(ref) when is_reference(ref) do
     read_temp(ref)
     read_rh(ref)

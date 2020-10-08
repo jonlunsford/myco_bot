@@ -27,6 +27,17 @@ defmodule MycoBot.Telemetry do
     end
   end
 
+  def restart_ht_sensor(i2c_bus, period \\ 30) do
+    case stop_poller(i2c_bus) do
+      :ok ->
+        start_ht_sensor(i2c_bus, period)
+
+      {:error, reason} ->
+        :telemetry.execute([:myco_bot, :ht_sensor, :error], %{}, %{error: reason})
+        {:error, reason}
+    end
+  end
+
   def stop_poller(key) do
     via_name(key)
     |> GenServer.whereis()
