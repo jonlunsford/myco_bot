@@ -27,7 +27,7 @@ defmodule MycoBot.Instrumenter do
     Logger.debug("[MYCOBOT] measurements: #{inspect(measurements)}")
     Logger.debug("[MYCOBOT] meta: #{inspect(meta)}")
 
-    if measurements.rh >= 90, do: MycoBot.GPIO.down(16), else: MycoBot.GPIO.up(16)
+    if measurements.rh >= 96, do: MycoBot.GPIO.down(16), else: MycoBot.GPIO.up(16)
   end
 
   def handle_event([:myco_bot, :ht_sensor, :error], measurements, meta, _config) do
