@@ -1,6 +1,8 @@
 defmodule MycoBot.Telemetry do
   @moduledoc false
 
+  require Logger
+
   use DynamicSupervisor
 
   alias MycoBot.HTSensor
@@ -28,8 +30,10 @@ defmodule MycoBot.Telemetry do
   end
 
   def restart_ht_sensor(i2c_bus, period \\ 30) do
+    Logger.debug("[MYCOBOT] attempting to restart HTSensor on bus: #{i2c_bus}")
     case stop_poller(i2c_bus) do
       :ok ->
+        Logger.debug("[MYCOBOT] Stopped HTSensor for restart")
         start_ht_sensor(i2c_bus, period)
 
       {:error, reason} ->
