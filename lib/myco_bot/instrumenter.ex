@@ -31,6 +31,9 @@ defmodule MycoBot.Instrumenter do
   end
 
   def handle_event([:myco_bot, :ht_sensor, :error], measurements, meta, _config) do
+    Logger.debug("[MYCOBOT] measurements: #{inspect(measurements)}")
+    Logger.debug("[MYCOBOT] meta: #{inspect(meta)}")
+
     MycoBot.Telemetry.restart_ht_sensor("i2c-1")
   end
 
