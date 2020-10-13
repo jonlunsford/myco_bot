@@ -14,11 +14,10 @@ defmodule MycoBot do
     {:ok, args}
   end
 
-
   @impl true
   def handle_info(:start, state) do
     MycoBot.Telemetry.start_ht_sensor("i2c-1", state.ht_sensor_polling_period)
-    MycoBot.Relay.open_pin(%{pin_number: 16, pin_direction: :output, value: 1})
+    Enum.each(state.devices, fn pin -> MycoBot.Relay.open_pin(pin) end)
 
     :telemetry.execute([:myco_bot, :started], %{}, state)
 

@@ -12,10 +12,11 @@ defmodule MycoBot.GPIO do
     state =
       args
       |> Map.put(:ref, nil)
+      |> Map.put(:status, "offline")
 
     case GPIO.open(state.pin_number, state.pin_direction, [initial_value: state.value]) do
       {:ok, ref} ->
-        state = %{state | ref: ref}
+        state = %{state | ref: ref, status: "online"}
 
         :telemetry.execute([:myco_bot, :gpio, :opened], %{}, state)
 
@@ -46,6 +47,10 @@ defmodule MycoBot.GPIO do
       nil -> {:error, :not_found}
       pid -> GenServer.call(pid, :down)
     end
+  end
+
+  def report_state(pid) do
+    GenServer.call(pid, :report_state)
   end
 
   @impl true
@@ -96,6 +101,11 @@ defmodule MycoBot.GPIO do
   def handle_call(:down, _from, %{value: 0} = state) do
     # already down, noop
     {:reply, :already_down, state}
+  end
+
+  @impl true
+  def handle_call(:report_state, _from, state) do
+    {:reply, state, state}
   end
 
   defp via_name(pin_number) do

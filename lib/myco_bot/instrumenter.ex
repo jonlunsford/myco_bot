@@ -12,7 +12,10 @@ defmodule MycoBot.Instrumenter do
       [:myco_bot, :gpio, :error],
       [:myco_bot, :gpio, :opened],
       [:myco_bot, :gpio, :up],
-      [:myco_bot, :gpio, :down]
+      [:myco_bot, :gpio, :down],
+      [:myco_bot, :gpio, :sync],
+
+      [:myco_bot_ui, :device, :refresh]
     ]
 
     :telemetry.attach_many(
@@ -27,7 +30,7 @@ defmodule MycoBot.Instrumenter do
     Logger.debug("[MYCOBOT] measurements: #{inspect(measurements)}")
     Logger.debug("[MYCOBOT] meta: #{inspect(meta)}")
 
-    if measurements.rh >= 96, do: MycoBot.GPIO.down(16), else: MycoBot.GPIO.up(16)
+    if measurements.rh >= 91, do: MycoBot.GPIO.down(16), else: MycoBot.GPIO.up(16)
   end
 
   def handle_event([:myco_bot, :ht_sensor, :error], measurements, meta, _config) do
@@ -35,6 +38,10 @@ defmodule MycoBot.Instrumenter do
     Logger.debug("[MYCOBOT] meta: #{inspect(meta)}")
 
     MycoBot.Telemetry.restart_ht_sensor("i2c-1")
+  end
+
+  def handle_event([:myco_bot_ui, :device, :refresh], _measurements, _meta, _config) do
+    MycoBot.Relay.report_states()
   end
 
   def handle_event(event, measurements, meta, _config) do

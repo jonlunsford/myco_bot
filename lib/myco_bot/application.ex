@@ -17,9 +17,7 @@ defmodule MycoBot.Application do
         {Registry, keys: :unique, name: Pins},
         {MycoBot.Telemetry, []},
         {MycoBot.Relay, []},
-        #{MycoBot.Sensor, []},
-        #{MycoBot.Power, []},
-        {MycoBot, %{ht_sensor_polling_period: 30}},
+        {MycoBot, myco_bot_config()},
       ] ++ children(target())
 
     MycoBot.Instrumenter.setup()
@@ -42,6 +40,20 @@ defmodule MycoBot.Application do
       # Starts a worker by calling: MycoBot.Worker.start_link(arg)
       # {MycoBot.Worker, arg},
     ]
+  end
+
+  def myco_bot_config do
+    %{
+      ht_sensor_polling_period: 30,
+      devices: [
+        %{
+          pin_number: 16,
+          pin_direction: :output,
+          value: 1,
+          type: "humidifier"
+        }
+      ]
+    }
   end
 
   def target() do

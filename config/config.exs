@@ -26,6 +26,8 @@ config :nerves, source_date_epoch: "1591076337"
 
 config :logger, backends: [RingLogger]
 
+import_config "../../myco_bot_ui/config/config.exs"
+
 if Mix.target() != :host do
   import_config "target.exs"
 end
