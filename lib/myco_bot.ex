@@ -32,13 +32,13 @@ defmodule MycoBot do
   end
 
   @impl true
-  def hand_call({:update_state, new_state}, _from, state) do
+  def handle_call({:update_state, new_state}, _from, state) do
     {:noreply, Map.merge(state, new_state)}
   end
 
   @impl true
-  def hand_call(:report_state, _from, state) do
-    :telementry.execute([:myco_bot, :state, :broadcast], %{}, state)
+  def handle_call(:report_state, _from, state) do
+    :telemetry.execute([:myco_bot, :state, :broadcast], %{}, state)
 
     {:reply, state, state}
   end

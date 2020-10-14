@@ -53,8 +53,8 @@ defmodule MycoBot.MixProject do
       {:telemetry, "~> 0.4.2"},
       {:telemetry_poller, "0.5.1"},
       # Display deps
-      {:oled, "~> 0.3.0"},
-      {:chisel, "~> 0.2.0"},
+      #{:oled, "~> 0.3.0"},
+      #{:chisel, "~> 0.2.0"},
       # Dependencies for specific targets
       {:nerves_system_rpi2, "~> 1.12", runtime: false, targets: :rpi2},
       {:nerves_system_rpi0, "~> 1.12", runtime: false, targets: :rpi0}
