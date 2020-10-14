@@ -15,7 +15,8 @@ defmodule MycoBot.Instrumenter do
       #[:myco_bot, :gpio, :down],
       #[:myco_bot, :gpio, :sync],
 
-      [:myco_bot_ui, :device, :refresh]
+      [:myco_bot_ui, :device, :refresh],
+      [:myco_bot_ui, :dashboard, :mounted]
     ]
 
     :telemetry.attach_many(
@@ -44,7 +45,7 @@ defmodule MycoBot.Instrumenter do
     MycoBot.Relay.report_states()
   end
 
-  def handle_event([:myco_bot_ui, :state, :fetch], _measurements, _meta, _config) do
+  def handle_event([:myco_bot_ui, :dashboard, :mounted], _measurements, _meta, _config) do
     MycoBot.report_state()
   end
 
