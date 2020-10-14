@@ -44,6 +44,8 @@ defmodule MycoBot.Application do
 
   def myco_bot_config do
     %{
+      rh: 0.0,
+      temp: 0.0,
       ht_sensor_polling_period: 30,
       devices: [
         %{
