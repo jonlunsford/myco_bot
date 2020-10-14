@@ -1,4 +1,6 @@
 defmodule MycoBot.Relay do
+  require Logger
+
   @moduledoc """
   Dynamic supervisor to manage GPIO processes
   """
@@ -22,7 +24,7 @@ defmodule MycoBot.Relay do
         MycoBot.GPIO.report_state(pid)
       end)
 
-    IO.inspect(DynamicSupervisor.which_children(__MODULE__))
+    Logger.debug("[MYCOBOT] reporting relay states: #{inspect(states)}")
 
     :telemetry.execute([:myco_bot, :gpio, :sync], %{}, %{devices: states})
   end

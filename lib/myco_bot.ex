@@ -1,4 +1,6 @@
 defmodule MycoBot do
+  require Logger
+
   use GenServer
 
   def start_link(args) do
@@ -33,11 +35,15 @@ defmodule MycoBot do
 
   @impl true
   def handle_call({:update_state, new_state}, _from, state) do
+    Logger.debug("[MYCOBOT] updating state: #{inspect(new_state)}")
+
     {:noreply, Map.merge(state, new_state)}
   end
 
   @impl true
   def handle_call(:report_state, _from, state) do
+    Logger.debug("[MYCOBOT] reporting state: #{inspect(state)}")
+
     :telemetry.execute([:myco_bot, :state, :broadcast], %{}, state)
 
     {:reply, state, state}
