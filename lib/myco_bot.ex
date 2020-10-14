@@ -1,6 +1,4 @@
 defmodule MycoBot do
-  require Logger
-
   use GenServer
 
   def start_link(args) do
