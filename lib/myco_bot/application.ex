@@ -50,7 +50,8 @@ defmodule MycoBot.Application do
           pin_number: 16,
           pin_direction: :output,
           value: 1,
-          type: "humidifier"
+          type: "humidifier",
+          description: "House of Hydro 5 disc fogger."
         }
       ]
     }
