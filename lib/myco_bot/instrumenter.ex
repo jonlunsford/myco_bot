@@ -29,7 +29,7 @@ defmodule MycoBot.Instrumenter do
   end
 
   def handle_event([:myco_bot, :ht_sensor, :read_rh], measurements, _meta, _config) do
-    if measurements.rh >= 95,
+    if measurements.rh >= 90,
       do: MycoBot.GPIO.down(16),
       else: MycoBot.GPIO.up(16)
   end
