@@ -1,45 +1,16 @@
 defmodule MycoBot.Telemetry do
   @moduledoc false
 
-  require Logger
-
   use DynamicSupervisor
-
-  alias MycoBot.HTSensor
 
   def start_link(args) do
     DynamicSupervisor.start_link(__MODULE__, args, name: __MODULE__)
   end
 
-  def start_ht_sensor(i2c_bus, period \\ 30) do
-    case HTSensor.open(i2c_bus) do
-      {:ok, ref} ->
-        telemetry_opts = [
-          measurements: [{HTSensor, :read, [ref]}],
-          period: :timer.seconds(period),
-          name: via_name(i2c_bus)
-        ]
+  def start_poller(opts) do
+    spec = :telemetry_poller.child_spec(opts)
 
-        spec = :telemetry_poller.child_spec(telemetry_opts)
-
-        DynamicSupervisor.start_child(__MODULE__, spec)
-
-      {:error, reason} ->
-        {:error, reason}
-    end
-  end
-
-  def restart_ht_sensor(i2c_bus, period \\ 30) do
-    Logger.debug("[MYCOBOT] attempting to restart HTSensor on bus: #{i2c_bus}")
-    case stop_poller(i2c_bus) do
-      :ok ->
-        Logger.debug("[MYCOBOT] Stopped HTSensor for restart")
-        start_ht_sensor(i2c_bus, period)
-
-      {:error, reason} ->
-        :telemetry.execute([:myco_bot, :ht_sensor, :error], %{}, %{error: reason})
-        {:error, reason}
-    end
+    DynamicSupervisor.start_child(__MODULE__, spec)
   end
 
   def stop_poller(key) do
@@ -57,6 +28,6 @@ defmodule MycoBot.Telemetry do
   end
 
   defp via_name(key) do
-    {:via, Registry, {Pollers, key}}
+    {:via, Registry, {MycoBot.Pollers, key}}
   end
 end

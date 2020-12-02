@@ -18,13 +18,15 @@ defmodule MycoBot.Relay do
   end
 
   def report_states do
+    Logger.debug("[MYCOBOT] Fetching GPIO Relay states")
+
     states =
       DynamicSupervisor.which_children(__MODULE__)
       |> Enum.map(fn({:undefined, pid, _type, _modules}) ->
         MycoBot.GPIO.report_state(pid)
       end)
 
-    Logger.debug("[MYCOBOT] reporting relay states: #{inspect(states)}")
+    Logger.debug("[MYCOBOT] reporting states: #{inspect(states)}")
 
     :telemetry.execute([:myco_bot, :gpio, :sync], %{}, %{devices: states})
   end

@@ -10,15 +10,16 @@ defmodule MycoBot do
   @impl true
   def init(args) do
     send(self(), :start)
-
     {:ok, args}
   end
 
   @impl true
   def handle_info(:start, state) do
-    MycoBot.Telemetry.start_ht_sensor("i2c-1", state.ht_sensor_polling_period)
+    state.inputs
+    |> Enum.each(fn {mod, args} -> mod.init(args) end)
 
-    Enum.each(state.devices, fn pin -> MycoBot.Relay.open_pin(pin) end)
+    state.outputs
+    |> Enum.each(fn config -> MycoBot.Relay.open_pin(config) end)
 
     :telemetry.execute([:myco_bot, :started], %{}, state)
 

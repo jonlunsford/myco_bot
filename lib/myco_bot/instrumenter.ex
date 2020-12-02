@@ -5,20 +5,27 @@ defmodule MycoBot.Instrumenter do
     events = [
       # [:myco_bot, :started],
 
-      [:myco_bot, :ht_sensor, :error],
-      # [:myco_bot, :ht_sensor, :read_temp],
-      [:myco_bot, :ht_sensor, :read_rh],
+      # [:myco_bot, :si7021, :read],
+      # [:myco_bot, :si7021, :error],
 
-      # [:myco_bot, :gpio, :error],
+      [:myco_bot, :sht30, :read],
+      # [:myco_bot, :sht30, :error],
+
+      # [:myco_bot, :veml7700, :read],
+      # [:myco_bot, :veml7700, :error],
+
+      [:myco_bot, :gpio, :error],
       # [:myco_bot, :gpio, :opened],
       # [:myco_bot, :gpio, :up],
       # [:myco_bot, :gpio, :down],
       # [:myco_bot, :gpio, :sync],
 
       [:myco_bot_ui, :device, :refresh],
-      [:myco_bot_ui, :device, :change]
-      # [:myco_bot_ui, :dashboard, :mounted]
+      [:myco_bot_ui, :device, :change],
+      [:myco_bot_ui, :dashboard, :mounted]
     ]
+
+    Logger.debug("[MYCOBOT] Setting up instrumentation: #{inspect(events)}")
 
     :telemetry.attach_many(
       "mycobot-instrumenter",
@@ -28,26 +35,36 @@ defmodule MycoBot.Instrumenter do
     )
   end
 
-  def handle_event([:myco_bot, :ht_sensor, :read_rh], measurements, _meta, _config) do
-    if measurements.rh >= 90,
-      do: MycoBot.GPIO.down(16),
-      else: MycoBot.GPIO.up(16)
-  end
-
-  def handle_event([:myco_bot, :ht_sensor, :error], _measurements, _meta, _config) do
-    MycoBot.Telemetry.restart_ht_sensor("i2c-1")
+  def handle_event([:myco_bot, :sht30, :read], measurements, _meta, _config) do
+    if measurements.humidity >= 90 do
+      MycoBot.GPIO.down(26) # Fog
+      MycoBot.GPIO.up(0) # Exhaust
+      MycoBot.GPIO.up(11) # Circ fan 1
+      MycoBot.GPIO.up(9) # Circ fan 2
+    else
+      MycoBot.GPIO.up(26)
+      MycoBot.GPIO.down(0) # Exhaust
+      MycoBot.GPIO.down(11) # Circ fan 1
+      MycoBot.GPIO.down(9) # Circ fan 2
+    end
   end
 
   def handle_event([:myco_bot_ui, :device, :refresh], _measurements, _meta, _config) do
+    Logger.debug("[MYCOBOT] Received request to refresh devices")
+    MycoBot.Relay.report_states()
+  end
+
+  def handle_event([:myco_bot_ui, :dashboard, :mounted], _measurements, _meta, _config) do
+    Logger.debug("[MYCOBOT] Received dashboard mount, reporting relay states")
     MycoBot.Relay.report_states()
   end
 
   def handle_event([:myco_bot_ui, :device, :change], _measurements, meta, _config) do
     Logger.debug("[MYCOBOT] [:myco_bot_ui, :device, :change]: #{inspect(meta)}")
 
-    if meta.value == 1,
-      do: MycoBot.GPIO.up(meta.pin_number),
-      else: MycoBot.GPIO.down(meta.pin_number)
+    if meta.value == :up,
+      do: MycoBot.GPIO.up(meta.pin),
+      else: MycoBot.GPIO.down(meta.pin)
   end
 
   def handle_event(event, measurements, meta, _config) do

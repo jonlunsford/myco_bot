@@ -9,13 +9,14 @@ defmodule MycoBot.Application do
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: MycoBot.Supervisor]
+
     children =
       [
-        {Registry, keys: :unique, name: Pollers},
-        {Registry, keys: :unique, name: Pins},
+        {Registry, keys: :unique, name: MycoBot.Pollers},
+        {Registry, keys: :unique, name: MycoBot.Pins},
         {MycoBot.Telemetry, []},
         {MycoBot.Relay, []},
-        {MycoBot, myco_bot_config()},
+        {MycoBot, myco_bot_config()}
       ] ++ children(target())
 
     MycoBot.Instrumenter.setup()
@@ -42,16 +43,77 @@ defmodule MycoBot.Application do
 
   def myco_bot_config do
     %{
-      rh: 0.0,
-      temp: 0.0,
-      ht_sensor_polling_period: 30,
-      devices: [
+      inputs: [
+        # {MycoBot.Inputs.SI7021, [bus_name: "i2c-1", polling_period: 30]},
+        # {MycoBot.Inputs.DHT22, %{pin_number: 4, polling_period: 30}},
+        # {MycoBot.Inputs.VEML7700,
+        # %{bus_name: "i2c-1", gain: 1, integration_time: 200, polling_period: 30}},
+        {MycoBot.Inputs.SHT30, %{bus_name: "i2c-1", polling_period: 15}},
+        {MycoBot.Inputs.Timer,
+         %{
+           name: :light_timer,
+           output_type: :gpio,
+           output_pin: 13,
+           interval: :hour,
+           length: 12
+         }}
+      ],
+      outputs: [
         %{
-          pin_number: 16,
-          pin_direction: :output,
+          type: :gpio,
+          pin: 26,
+          direction: :output,
           value: 1,
-          type: "humidifier",
-          description: "House of Hydro 5 disc fogger."
+          polarity: :reverse,
+          description: "Fogger"
+        },
+        %{
+          type: :gpio,
+          pin: 5,
+          direction: :output,
+          value: 0,
+          polarity: :reverse,
+          description: "Air Intake"
+        },
+        %{
+          type: :gpio,
+          pin: 0,
+          direction: :output,
+          value: 1,
+          polarity: :reverse,
+          description: "Exhaust Fan"
+        },
+        %{
+          type: :gpio,
+          pin: 13,
+          direction: :output,
+          value: 0,
+          polarity: :reverse,
+          description: "Lights"
+        },
+        %{
+          type: :gpio,
+          pin: 11,
+          direction: :output,
+          value: 1,
+          polarity: :reverse,
+          description: "Circulation Fan 1"
+        },
+        %{
+          type: :gpio,
+          pin: 9,
+          direction: :output,
+          value: 1,
+          polarity: :reverse,
+          description: "Circulation Fan 2"
+        },
+        %{
+          type: :gpio,
+          pin: 6,
+          direction: :output,
+          value: 1,
+          polarity: :reverse,
+          description: "Misc 1"
         }
       ]
     }
