@@ -39,7 +39,7 @@ defmodule MycoBot.MixProject do
   defp deps do
     [
       # Dependencies for all targets
-      {:nerves, "~> 1.6.0", runtime: false},
+      {:nerves, "~> 1.7.0", runtime: false},
       {:shoehorn, "~> 0.6"},
       {:ring_logger, "~> 0.6"},
       {:toolshed, "~> 0.2"},
@@ -55,9 +55,8 @@ defmodule MycoBot.MixProject do
       # Display deps
       #{:oled, "~> 0.3.0"},
       #{:chisel, "~> 0.2.0"},
-      {:dht, "~> 0.1"}, # Reading DHT22 sensor
       # Dependencies for specific targets
-      {:nerves_system_rpi2, "~> 1.12", runtime: false, targets: :rpi2},
+      #{:nerves_system_rpi2, "~> 1.12", runtime: false, targets: :rpi2},
       {:nerves_system_rpi0, "~> 1.12", runtime: false, targets: :rpi0}
     ]
   end
