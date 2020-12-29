@@ -36,7 +36,7 @@ defmodule MycoBot.Instrumenter do
   end
 
   def handle_event([:myco_bot, :sht30, :read], measurements, _meta, _config) do
-    if measurements.humidity >= 90 do
+    if measurements.humidity >= 95 do
       MycoBot.GPIO.down(26) # Fog
       MycoBot.GPIO.up(0) # Exhaust
       MycoBot.GPIO.up(11) # Circ fan 1
