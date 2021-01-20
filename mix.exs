@@ -52,6 +52,7 @@ defmodule MycoBot.MixProject do
       {:circuits_gpio, "~> 0.4"},
       {:telemetry, "~> 0.4"},
       {:telemetry_poller, "0.5.1"},
+      {:telemetry_influxdb, "0.2.0"},
       # Display deps
       #{:oled, "~> 0.3.0"},
       #{:chisel, "~> 0.2.0"},
