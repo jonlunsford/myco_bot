@@ -5,7 +5,10 @@
 # is restricted to this project.
 import Config
 
-config :myco_bot, target: Mix.target()
+config :myco_bot,
+  target: Mix.target(),
+  influx_data_key: System.get_env("INFLUX_DATA_KEY")
+
 
 # Customize non-Elixir parts of the firmware. See
 # https://hexdocs.pm/nerves/advanced-configuration.html for details.

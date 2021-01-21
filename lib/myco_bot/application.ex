@@ -38,17 +38,24 @@ defmodule MycoBot.Application do
       # Children for all targets except host
       # Starts a worker by calling: MycoBot.Worker.start_link(arg)
       # {MycoBot.Worker, arg},
-      #{TelemetryInfluxDB, [
-        #events: [
-          #%{name: [:myco_bot, :sht30, :read]}
-        #],
-        #version: :v2,
-        #protocol: :http,
-        #host: "https://us-west-2-1.aws.cloud2.influxdata.com",
-        #bucket: "myco_bot",
-        #org: "jon@capturethecastle.net",
-        #token: System.get_env("INFLUX_DATA_KEY")
-      #]}
+      %{
+        id: TelemetryInfluxDB,
+        start:
+          {TelemetryInfluxDB, :start_link,
+           [[
+             events: [
+               %{name: [:myco_bot, :sht30, :read]},
+               %{name: [:myco_bot, :influx_test]}
+             ],
+             version: :v2,
+             protocol: :http,
+             host: "https://us-west-2-1.aws.cloud2.influxdata.com",
+             port: 443,
+             bucket: "myco_bot",
+             org: "jon@capturethecastle.net",
+             token: Application.get_env(:myco_bot, :influx_data_key)
+           ]]}
+      }
     ]
   end
 

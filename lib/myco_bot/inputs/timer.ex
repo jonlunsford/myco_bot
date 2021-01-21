@@ -28,7 +28,7 @@ defmodule MycoBot.Inputs.Timer do
     end
   end
 
-  defp telemetry(event, metrics, meta \\ %{}) do
+  defp telemetry(event, metrics, meta) do
     meta = Map.put(meta, :module, __MODULE__)
     :telemetry.execute([:myco_bot, :timer, event], metrics, meta)
   end

@@ -14,7 +14,7 @@ defmodule MycoBot.Inputs.SHT30 do
 
   @i2c_addr 0x44
 
-  @soft_reset <<0x30, 0xA2>>
+  #@soft_reset <<0x30, 0xA2>>
   @enable_periodic_mode <<0x21, 0x30>>
   @read <<0xE0, 0x00>>
 
