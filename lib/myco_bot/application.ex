@@ -16,6 +16,7 @@ defmodule MycoBot.Application do
         {Registry, keys: :unique, name: MycoBot.Pins},
         {MycoBot.Telemetry, []},
         {MycoBot.Relay, []},
+        {MycoBot.Environment, []},
         {MycoBot, myco_bot_config()}
       ] ++ children(target())
 
