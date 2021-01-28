@@ -60,13 +60,13 @@ config :vintage_net,
      }}
   ]
 
-config :myco_bot, MycoBot.OLED,
-  device: "i2c-1",
-  driver: :ssd1306,
-  type: :i2c,
-  width: 128,
-  height: 32,
-  address: 0x3c
+#config :myco_bot, MycoBot.OLED,
+  #device: "i2c-1",
+  #driver: :ssd1306,
+  #type: :i2c,
+  #width: 128,
+  #height: 32,
+  #address: 0x3c
 
 config :mdns_lite,
   # The `host` key specifies what hostnames mdns_lite advertises.  `:hostname`
@@ -99,6 +99,20 @@ config :mdns_lite,
       port: 4369
     }
   ]
+
+config :myco_bot_ui, MycoBotUiWeb.Endpoint,
+  # Nerves root filesystem is read-only, so disable the code reloader
+  code_reloader: false,
+  http: [port: 80],
+  # Use compile-time Mix config instead of runtime environment variables
+  load_from_system_env: false,
+  # Start the server since we're running in a release instead of through `mix`
+  server: true,
+  url: [host: "nerves.local", port: 80],
+  render_errors: [view: MycoBotUiWeb.ErrorView, accepts: ~w(html json), layout: false],
+  pubsub_server: MycoBotUi.PubSub,
+  live_view: [signing_salt: "Fj2tZT4oGpy4WAER"],
+  check_origin: ["http://nerves.local", "http://192.168.1.26"]
 
 # Import target specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
