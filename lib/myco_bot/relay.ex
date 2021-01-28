@@ -4,7 +4,6 @@ defmodule MycoBot.Relay do
   @moduledoc """
   Dynamic supervisor to manage GPIO processes
   """
-
   use DynamicSupervisor
 
   def start_link(args) do
