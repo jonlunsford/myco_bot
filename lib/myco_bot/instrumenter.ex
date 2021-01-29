@@ -24,7 +24,8 @@ defmodule MycoBot.Instrumenter do
 
       [:myco_bot_ui, :device, :refresh],
       [:myco_bot_ui, :device, :change],
-      [:myco_bot_ui, :dashboard, :mounted]
+      [:myco_bot_ui, :dashboard, :mounted],
+      [:myco_bot_ui, :environment, :change]
     ]
 
     Logger.debug("[MYCOBOT] Setting up instrumentation: #{inspect(events)}")
@@ -59,6 +60,7 @@ defmodule MycoBot.Instrumenter do
   def handle_event([:myco_bot_ui, :dashboard, :mounted], _measurements, _meta, _config) do
     Logger.debug("[MYCOBOT] Received dashboard mount, reporting relay states")
     MycoBot.Relay.report_states()
+    Environment.report_state()
   end
 
   def handle_event([:myco_bot_ui, :device, :change], _measurements, meta, _config) do
@@ -67,6 +69,12 @@ defmodule MycoBot.Instrumenter do
     if meta.value == :up,
       do: MycoBot.GPIO.up(meta.pin),
       else: MycoBot.GPIO.down(meta.pin)
+  end
+
+  def handle_event([:myco_bot_ui, :environment, :change], _measurements, meta, _config) do
+    Logger.debug("[MYCOBOT] [:myco_bot_ui, :environment, :change]: #{inspect(meta)}")
+
+    Environment.set(meta.key, meta.value)
   end
 
   def handle_event(event, measurements, meta, _config) do

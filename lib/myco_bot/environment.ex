@@ -15,6 +15,12 @@ defmodule MycoBot.Environment do
     GenServer.call(MycoBot.Environment, {:put, key, value})
   end
 
+  def report_state() do
+    config = GenServer.call(MycoBot.Environment, :report_state)
+
+    :telemetry.execute([:myco_bot, :environment, :sync], %{}, %{config: config})
+  end
+
   @impl true
   def init(options) do
     config =
@@ -43,5 +49,10 @@ defmodule MycoBot.Environment do
     new_config = Map.put(config, config_key, value)
 
     {:reply, :ok, new_config}
+  end
+
+  @impl true
+  def handle_call(:report_state, _from, config) do
+    {:reply, config, config}
   end
 end
