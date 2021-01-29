@@ -39,12 +39,12 @@ defmodule MycoBot.Instrumenter do
 
   def handle_event([:myco_bot, :sht30, :read], measurements, _meta, _config) do
     if measurements.humidity >= Environment.fetch(:max_humidity) do
-      MycoBot.GPIO.down(26) # Fog
+      MycoBot.GPIO.down(6) # Fog
       MycoBot.GPIO.up(0) # Exhaust
       MycoBot.GPIO.up(11) # Circ fan 1
       MycoBot.GPIO.up(9) # Circ fan 2
     else
-      MycoBot.GPIO.up(26)
+      MycoBot.GPIO.up(6)
       MycoBot.GPIO.down(0) # Exhaust
       MycoBot.GPIO.down(11) # Circ fan 1
       MycoBot.GPIO.down(9) # Circ fan 2
