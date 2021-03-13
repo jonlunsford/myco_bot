@@ -80,7 +80,7 @@ defmodule MycoBot.Application do
       outputs: [
         %{
           type: :gpio,
-          pin: 11,
+          pin: 9,
           direction: :output,
           value: 1,
           polarity: :reverse,
@@ -120,7 +120,7 @@ defmodule MycoBot.Application do
         },
         %{
           type: :gpio,
-          pin: 9,
+          pin: 11, # not getting power
           direction: :output,
           value: 1,
           polarity: :reverse,
