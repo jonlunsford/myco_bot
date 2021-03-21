@@ -60,14 +60,6 @@ config :vintage_net,
      }}
   ]
 
-#config :myco_bot, MycoBot.OLED,
-  #device: "i2c-1",
-  #driver: :ssd1306,
-  #type: :i2c,
-  #width: 128,
-  #height: 32,
-  #address: 0x3c
-
 config :mdns_lite,
   # The `host` key specifies what hostnames mdns_lite advertises.  `:hostname`
   # advertises the device's hostname.local. For the official Nerves systems, this
@@ -75,7 +67,7 @@ config :mdns_lite,
   # "nerves.local" for convenience. If more than one Nerves device is on the
   # network, delete "nerves" from the list.
 
-  host: [:hostname, "nerves"],
+  host: [:hostname],
   ttl: 120,
 
   # Advertise the following services over mDNS.
@@ -108,11 +100,11 @@ config :myco_bot_ui, MycoBotUiWeb.Endpoint,
   load_from_system_env: false,
   # Start the server since we're running in a release instead of through `mix`
   server: true,
-  url: [host: "nerves.local", port: 80],
+  url: [host: "#{System.get_env("HOSTNAME")}.local", port: 80],
   render_errors: [view: MycoBotUiWeb.ErrorView, accepts: ~w(html json), layout: false],
   pubsub_server: MycoBotUi.PubSub,
   live_view: [signing_salt: "Fj2tZT4oGpy4WAER"],
-  check_origin: ["http://nerves.local", "http://192.168.1.26"]
+  check_origin: ["http://#{System.get_env("HOSTNAME")}.local", "http://#{System.get_env("LOCAL_IP")}"]
 
 # Import target specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

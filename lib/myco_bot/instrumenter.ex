@@ -7,7 +7,7 @@ defmodule MycoBot.Instrumenter do
     events = [
       # [:myco_bot, :started],
 
-      # [:myco_bot, :si7021, :read],
+       [:myco_bot, :si7021, :read],
       # [:myco_bot, :si7021, :error],
 
       [:myco_bot, :sht30, :read],
@@ -49,6 +49,15 @@ defmodule MycoBot.Instrumenter do
       MycoBot.GPIO.down(0) # Exhaust
       #MycoBot.GPIO.down(11) # Circ fan 1
       #MycoBot.GPIO.down(9) # Circ fan 2
+    end
+  end
+
+  def handle_event([:myco_bot, :si7021, :read], measurements, _meta, _config) do
+    Logger.debug("[MYCOBOT] Received reading from SI7021 #{inspect(measurements)}")
+    if measurements.humidity >= Environment.fetch(:max_humidity) do
+      MycoBot.GPIO.down(9) # Fog
+    else
+      MycoBot.GPIO.up(9) # Fog
     end
   end
 

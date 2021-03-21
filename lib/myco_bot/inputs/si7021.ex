@@ -40,8 +40,13 @@ defmodule MycoBot.Inputs.SI7021 do
   end
 
   def read(ref) when is_reference(ref) do
-    read_temp(ref)
-    read_rh(ref)
+    with {:ok, temp} <- read_temp(ref),
+         {:ok, rh} <- read_rh(ref) do
+      telemetry(:read, %{temperature: temp, humidity: rh}, %{ref: ref})
+    else
+      {:error, reason} ->
+        telemetry(:error, %{}, %{ref: ref, error: reason})
+    end
   end
 
   def read(ref) do
@@ -51,20 +56,20 @@ defmodule MycoBot.Inputs.SI7021 do
   def read_temp(ref) do
     case I2C.write_read(ref, @addr, @temp_hold_cmd, 2) do
       {:ok, bits} ->
-        telemetry(:temerature, %{temperature: convert_temp(bits)}, %{ref: ref, bits: bits})
+        {:ok, convert_temp(bits)}
 
       {:error, reason} ->
-        telemetry(:error, %{}, %{ref: ref, error: reason})
+        {:error, reason}
     end
   end
 
   def read_rh(ref) do
     case I2C.write_read(ref, @addr, @rh_hold_cmd, 2) do
       {:ok, bits} ->
-        telemetry(:humidity, %{humidity: convert_rh(bits)}, %{ref: ref, bits: bits})
+        {:ok, convert_rh(bits)}
 
       {:error, reason} ->
-        telemetry(:error, %{}, %{ref: ref, error: reason})
+        {:error, reason}
     end
   end
 
@@ -77,11 +82,13 @@ defmodule MycoBot.Inputs.SI7021 do
     |> celcius_to_f
     |> Float.round()
   end
+
   defp convert_temp(_), do: 0.0
 
   defp celcius_to_f(temp) when is_float(temp) do
     temp / 5 * 9 + 32
   end
+
   defp celcius_to_f(_), do: 0.0
 
   defp convert_rh(bits) when is_bitstring(bits) do
