@@ -46,6 +46,7 @@ defmodule MycoBot.Application do
            [[
              events: [
                %{name: [:myco_bot, :sht30, :read]},
+               %{name: [:myco_bot, :si7021, :read]},
                %{name: [:myco_bot, :influx_test]}
              ],
              version: :v2,
@@ -63,7 +64,7 @@ defmodule MycoBot.Application do
   def myco_bot_config do
     %{
       inputs: [
-        # {MycoBot.Inputs.SI7021, [bus_name: "i2c-1", polling_period: 30]},
+        #{MycoBot.Inputs.SI7021, %{bus_name: "i2c-1", polling_period: 30}},
         # {MycoBot.Inputs.DHT22, %{pin_number: 4, polling_period: 30}},
         # {MycoBot.Inputs.VEML7700,
         # %{bus_name: "i2c-1", gain: 1, integration_time: 200, polling_period: 30}},
@@ -80,7 +81,7 @@ defmodule MycoBot.Application do
       outputs: [
         %{
           type: :gpio,
-          pin: 9,
+          pin: 0,
           direction: :output,
           value: 1,
           polarity: :reverse,
@@ -96,7 +97,7 @@ defmodule MycoBot.Application do
         },
         %{
           type: :gpio,
-          pin: 0,
+          pin: 9,
           direction: :output,
           value: 1,
           polarity: :reverse,
