@@ -57,12 +57,10 @@ defmodule MycoBot.Inputs.SHT30 do
 
   # Page 14
   defp convert_binary_temperature(bits) do
-    # For some reason the -49 in the data sheet is about 100 off
     value = :binary.decode_unsigned(bits)
     Logger.debug("[MYCOBOT] calculating temperature: #{value}")
-    (191 *
-       value /
-       (:math.pow(2, 16) - 1))
+
+    (-49 + 315 * value / :math.pow(2, 16) - 1)
     |> Float.round(2)
   end
 
