@@ -68,7 +68,7 @@ defmodule MycoBot.Application do
         # {MycoBot.Inputs.DHT22, %{pin_number: 4, polling_period: 30}},
         # {MycoBot.Inputs.VEML7700,
         # %{bus_name: "i2c-1", gain: 1, integration_time: 200, polling_period: 30}},
-        {MycoBot.Inputs.SHT30, %{bus_name: "i2c-1", polling_period: 15}},
+        {MycoBot.Inputs.SHT30, %{bus_name: "i2c-1", polling_period: 30}},
         {MycoBot.Inputs.Timer,
          %{
            name: :light_timer,
@@ -81,7 +81,7 @@ defmodule MycoBot.Application do
       outputs: [
         %{
           type: :gpio,
-          pin: 0,
+          pin: 9,
           direction: :output,
           value: 1,
           polarity: :reverse,
@@ -97,7 +97,7 @@ defmodule MycoBot.Application do
         },
         %{
           type: :gpio,
-          pin: 9,
+          pin: 1,
           direction: :output,
           value: 1,
           polarity: :reverse,
