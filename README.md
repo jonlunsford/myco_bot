@@ -1,8 +1,10 @@
 # MycoBot
 
-**TODO: Add description**
+Manage the environment for growing Gourmet Mushrooms with RPi, Elixir and Nerves.
 
 ## Targets
+
+- `rpi0` - The recommended target and the primary dev platform for MycoBot.
 
 Nerves applications produce images for hardware targets based on the
 `MIX_TARGET` environment variable. If `MIX_TARGET` is unset, `mix` builds an
@@ -16,17 +18,18 @@ https://hexdocs.pm/nerves/targets.html#content
 
 ## Getting Started
 
-To start your Nerves app:
-  * `export MIX_TARGET=my_target` or prefix every command with
-    `MIX_TARGET=my_target`. For example, `MIX_TARGET=rpi3`
-  * Install dependencies with `mix deps.get`
-  * Create firmware with `mix firmware`
-  * Burn to an SD card with `mix firmware.burn`
+To start MycoBot:
+
+- `export MIX_TARGET=rpi0` or prefix every command with
+  `MIX_TARGET=my_target`. For example, `MIX_TARGET=rpi0`
+- Install dependencies with `mix deps.get`
+- Create firmware with `mix firmware`
+- Burn to an SD card with `mix firmware.burn`
 
 ## Learn more
 
-  * Official docs: https://hexdocs.pm/nerves/getting-started.html
-  * Official website: https://nerves-project.org/
-  * Forum: https://elixirforum.com/c/nerves-forum
-  * Discussion Slack elixir-lang #nerves ([Invite](https://elixir-slackin.herokuapp.com/))
-  * Source: https://github.com/nerves-project/nerves
+- Official docs: https://hexdocs.pm/nerves/getting-started.html
+- Official website: https://nerves-project.org/
+- Forum: https://elixirforum.com/c/nerves-forum
+- Discussion Slack elixir-lang #nerves ([Invite](https://elixir-slackin.herokuapp.com/))
+- Source: https://github.com/nerves-project/nerves
